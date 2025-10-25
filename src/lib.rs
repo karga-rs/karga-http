@@ -1,8 +1,12 @@
 use hdrhistogram::Histogram;
 use karga::{Aggregate, Metric, Report};
+use reqwest::Client;
+use reqwest::Request;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, time::Duration};
-
+use std::pin::Pin;
+use std::time::Instant;
+use std::{collections::HashMap, sync::Arc, time::Duration};
+use typed_builder::TypedBuilder;
 #[derive(Clone, PartialEq, PartialOrd)]
 pub struct HttpResponseMetric {
     pub latency: Duration,
@@ -118,3 +122,41 @@ impl From<HttpAggregate> for HttpReport {
 }
 
 impl Report<HttpAggregate> for HttpReport {}
+
+#[derive(TypedBuilder)]
+pub struct HttpAction {
+    pub client: Client,
+    pub request: Arc<Request>,
+}
+
+impl HttpAction {
+    pub fn build(
+        &self,
+    ) -> impl Fn() -> Pin<Box<dyn Future<Output = HttpMetric> + Send>> + Send + Sync + Clone + 'static
+    {
+        let client = self.client.clone();
+        let request = self.request.clone();
+        move || {
+            let request = request.clone();
+            let client = client.clone();
+            Box::pin(async move {
+                let request = request.try_clone().expect("Body of request must be Clone");
+
+                let start = Instant::now();
+
+                // Yeah lets hardcode it
+                let res = client.execute(request).await;
+                let elapsed = start.elapsed();
+                match res {
+                    Ok(res) => HttpMetric::Success(HttpResponseMetric {
+                        latency: elapsed,
+                        status_code: res.status().into(),
+                        bytes_received: res.content_length().unwrap_or(0),
+                        bytes_sent: 0,
+                    }),
+                    Err(_) => HttpMetric::Failure,
+                }
+            })
+        }
+    }
+}
