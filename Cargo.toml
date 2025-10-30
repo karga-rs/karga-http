@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 hdrhistogram = "7.5.4"
-karga = { version = "0.3", features = ["macros"] }
+karga = { version = "0.3", features = [] }
 reqwest = "0.12.24"
 serde = { version = "1.0.228", features = ["derive"] }
 tracing = "0.1"
