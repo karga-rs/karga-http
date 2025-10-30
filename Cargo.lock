@@ -629,6 +629,8 @@ dependencies = [
 [[package]]
 name = "karga"
 version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0db38c89db5ebe847c4c20c412af79683d9f10b201767369eda19af105927f1a"
 dependencies = [
  "futures",
  "num_cpus",

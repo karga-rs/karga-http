@@ -2,6 +2,14 @@
 name = "karga_http"
 version = "0.1.0"
 edition = "2024"
+authors = ["Degarti <outragedline@proton.me>"]
+license = "MIT"
+readme = "./README.md"
+description = "Official http implementation for the karga load testing framework"
+repository = "https://github.com/karga-rs/karga-http"
+keywords = ["loadtesting", "benchmark", "rps", "performance", "http"]
+categories = ["development-tools::profiling"]
+publish = true
 
 [dependencies]
 hdrhistogram = "7.5.4"
