@@ -1,5 +1,5 @@
 # karga-http
-[![crates.io](https://img.shields.io/crates/v/karga.svg)](https://crates.io/crates/karga_http)
+[![crates.io](https://img.shields.io/crates/v/karga_http.svg)](https://crates.io/crates/karga_http)
 
 **karga-http** is the HTTP implementation for the [karga](https://github.com/karga-rs/karga) load testing framework.
 
